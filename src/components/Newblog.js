@@ -1,17 +1,63 @@
-import React from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const Newblog = (props) => {
-    return (
-        <div>
-            <h2>create new</h2>
-            <form onSubmit={props.onSubmit}>
-                <div>title:<input value={props.title} onChange={props.onTitleChange}></input></div>
-                <div>author:<input value={props.author} onChange={props.onAuthorChange}></input></div>
-                <div>url:<input value={props.url} onChange={props.onUrlChange}></input></div>
-                <div><button type="submit">create</button></div>
-            </form>
-        </div>
-    )
+const Newblog = ({ createBlog }) => {
+	const [title, setTitle] = useState('')
+	const [author, setAuthor] = useState('')
+	const [url, setUrl] = useState('')
+
+	const handleTitleChange = (event) => {
+		setTitle(event.target.value)
+	}
+
+	const handleAuthorChange = (event) => {
+		setAuthor(event.target.value)
+	}
+
+	const handleUrlChange = (event) => {
+		setUrl(event.target.value)
+	}
+
+	const addBlog = (event) => {
+		event.preventDefault()
+		createBlog({
+			title: title,
+			author: author,
+			url: url
+		})
+		setTitle('')
+		setAuthor('')
+		setUrl('')
+	}
+
+	return (
+		<div>
+			<h2>create new</h2>
+			<form onSubmit={addBlog}>
+				<div>
+					title:
+					<input value={title} onChange={handleTitleChange}
+					/>
+				</div>
+				<div>
+					author:
+					<input value={author} onChange={handleAuthorChange}/>
+				</div>
+				<div>
+					url:
+					<input value={url} onChange={handleUrlChange}/>
+				</div>
+				<div>
+					<button type="submit">
+						create
+					</button>
+				</div>
+			</form>
+		</div>
+	)
+}
+Newblog.propTypes = {
+	createBlog: PropTypes.func
 }
 
 export default Newblog
