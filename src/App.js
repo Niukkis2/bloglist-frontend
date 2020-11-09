@@ -88,6 +88,8 @@ const App = () => {
 					console.log(exception)
 				}
 			}
+		} else {
+			notifyWith('You cannot delete other users blogs', 'error')
 		}
 	}
 
@@ -131,7 +133,14 @@ const App = () => {
 		<div>
 			<h2>blogs</h2>
 			<Notification message={message}></Notification>
-			<div>{user.name} logged in <button onClick={handleLogout}>logout</button></div>
+			<div className='userInfo'>
+				{user.name} logged in
+				<button
+					id='logoutButton'
+					onClick={handleLogout}>
+					logout
+				</button>
+			</div>
 			<Togglable
 				buttonLabel='create new blog'
 				buttonLabel2='cancel'
@@ -140,14 +149,16 @@ const App = () => {
 					createBlog={onNewBlogSubmit}
 				/>
 			</Togglable>
-			{blogs.map(blog =>
-				<Blog
-					key={blog.id}
-					blog={blog}
-					onChangeLikes={() => onChangeLikes(blog)}
-					onDeleteBlog={() => onDeleteBlog(blog)}
-				/>
-			)}
+			<div id='blogWrapper'>
+				{blogs.map(blog =>
+					<Blog
+						key={blog.id}
+						blog={blog}
+						onChangeLikes={() => onChangeLikes(blog)}
+						onDeleteBlog={() => onDeleteBlog(blog)}
+					/>
+				)}
+			</div>
 		</div>
 	)
 }

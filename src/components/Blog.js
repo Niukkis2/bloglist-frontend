@@ -19,20 +19,20 @@ const Blog = ({ blog, onChangeLikes, onDeleteBlog }) => {
 	}
 
 	return (
-		<div style={blogStyle}>
-			{blog.title} {blog.author} <button onClick={handleClick}>{label}</button>
-			<div style={showWhenVisible}>
+		<div style={blogStyle} className="blog">
+			{blog.title} {blog.author} <button onClick={handleClick} className='blogShowButton'>{label}</button>
+			<div style={showWhenVisible} className='blogTogglableDiv'>
 				<div>
 					{blog.url}
 				</div>
-				<div>
-					{blog.likes} <button onClick={onChangeLikes}>like</button>
+				<div id="blogLikesDiv">
+					{blog.likes} <button onClick={onChangeLikes} className='blogLikeButton'>like</button>
 				</div>
 				<div>
 					{blog.user.name}
 				</div>
 				<div>
-					<button onClick={onDeleteBlog}>remove</button>
+					<button onClick={onDeleteBlog} className='blogRemoveButton'>remove</button>
 				</div>
 			</div>
 		</div>

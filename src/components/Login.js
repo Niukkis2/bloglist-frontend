@@ -10,10 +10,11 @@ const Login = ({
 	return (
 		<div>
 			<h2>log in to application</h2>
-			<form onSubmit={onLoginSubmit}>
+			<form onSubmit={onLoginSubmit} className="loginForm">
 				<div>
           username:
 					<input
+						id='username'
 						value={username}
 						onChange={onUsernameChange}
 					/>
@@ -21,13 +22,14 @@ const Login = ({
 				<div>
           password:
 					<input
+						id='password'
 						type="password"
 						value={password}
 						onChange={onPasswordChange}
 					/>
 				</div>
 				<div>
-					<button type="submit">login</button>
+					<button id='loginButton' type="submit">login</button>
 				</div>
 			</form>
 		</div>
