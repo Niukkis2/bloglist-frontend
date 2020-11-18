@@ -1,29 +1,27 @@
-import React, { useImperativeHandle, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Togglable = React.forwardRef((props, ref) => {
+const Togglable = ((props) => {
 	const [visible, setVisible] = useState(false)
 	const hideWhenVisible = { display: visible ? 'none' : '' }
 	const showWhenVisible = { display: visible ? '' : 'none' }
 
-	const toggleVisiblity = () => {
+	const toggleVisibility = () => {
 		setVisible(!visible)
 	}
-
-	useImperativeHandle(ref, () => {
-		return {
-			toggleVisiblity
-		}
-	})
 
 	return (
 		<div>
 			<div style={hideWhenVisible}>
-				<button id='createNewBlogButton' onClick={toggleVisiblity}>{props.buttonLabel}</button>
+				<button id='createNewBlogButton' onClick={toggleVisibility}>{props.buttonLabel}</button>
 			</div>
 			<div style={showWhenVisible}>
-				{props.children}
-				<button onClick={toggleVisiblity}>{props.buttonLabel2}</button>
+				{React.Children.map(props.children, child => {
+					return React.cloneElement(child, {
+						toggleVisibility: toggleVisibility
+					})
+				})}
+				<button onClick={toggleVisibility}>{props.buttonLabel2}</button>
 			</div>
 		</div>
 	)

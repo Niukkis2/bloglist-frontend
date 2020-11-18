@@ -1,33 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { useField } from '../hooks'
+import { useDispatch, useSelector } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
 
-const Newblog = ({ createBlog }) => {
-	const [title, setTitle] = useState('')
-	const [author, setAuthor] = useState('')
-	const [url, setUrl] = useState('')
+const Newblog = ({ toggleVisibility }) => {
+	const userId = useSelector(state => state.user.id)
+	const title = useField('text')
+	const author = useField('text')
+	const url = useField('text')
 
-	const handleTitleChange = (event) => {
-		setTitle(event.target.value)
-	}
-
-	const handleAuthorChange = (event) => {
-		setAuthor(event.target.value)
-	}
-
-	const handleUrlChange = (event) => {
-		setUrl(event.target.value)
-	}
+	const dispatch = useDispatch()
 
 	const addBlog = (event) => {
+		toggleVisibility()
 		event.preventDefault()
-		createBlog({
-			title: title,
-			author: author,
-			url: url
-		})
-		setTitle('')
-		setAuthor('')
-		setUrl('')
+		dispatch(createBlog({
+			title: title.value,
+			author: author.value,
+			url: url.value,
+			userId: userId
+		}))
+		title.onReset()
+		author.onReset()
+		url.onReset()
 	}
 
 	return (
@@ -36,16 +32,15 @@ const Newblog = ({ createBlog }) => {
 			<form onSubmit={addBlog} className='blogSubmitForm'>
 				<div>
 					title:
-					<input id='title' value={title} onChange={handleTitleChange}
-					/>
+					<input id='title' {...title}/>
 				</div>
 				<div>
 					author:
-					<input id='author' value={author} onChange={handleAuthorChange}/>
+					<input id='author' {...author}/>
 				</div>
 				<div>
 					url:
-					<input id='url' value={url} onChange={handleUrlChange}/>
+					<input id='url' {...url}/>
 				</div>
 				<div>
 					<button type='submit' id='newBlogSubmitButton'>
@@ -57,7 +52,7 @@ const Newblog = ({ createBlog }) => {
 	)
 }
 Newblog.propTypes = {
-	createBlog: PropTypes.func
+	toggleVisibility: PropTypes.func
 }
 
 export default Newblog

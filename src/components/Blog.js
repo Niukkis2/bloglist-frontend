@@ -1,48 +1,44 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useParams } from 'react-router-dom'
+import { changeBlogsLikes } from '../reducers/blogReducer'
+import Commentform from './Commentform'
 
-const blogStyle = {
-	border: '2px solid black',
-	marginBottom: 5,
-	marginTop: 5,
-	padding: '5px',
-}
+const Blog = () => {
+	const id = useParams().id
+	const blog = useSelector(state => state.blogs.find(blog => blog.id === id))
+	const dispatch = useDispatch()
 
-const Blog = ({ blog, onChangeLikes, onDeleteBlog }) => {
-	const [visible, setVisible] = useState(false)
-	const [label, setLabel] = useState('view')
-	const showWhenVisible = { display: visible ? '' : 'none' }
-
-	const handleClick = () => {
-		setVisible(!visible)
-		setLabel(label === 'view' ? 'hide' : 'view')
+	const handleLike = (event) => {
+		event.preventDefault()
+		dispatch(changeBlogsLikes(blog))
 	}
-
+	if (!blog) {
+		return null
+	}
 	return (
-		<div style={blogStyle} className="blog">
-			{blog.title} {blog.author} <button onClick={handleClick} className='blogShowButton'>{label}</button>
-			<div style={showWhenVisible} className='blogTogglableDiv'>
-				<div>
-					{blog.url}
-				</div>
-				<div id="blogLikesDiv">
-					{blog.likes} <button onClick={onChangeLikes} className='blogLikeButton'>like</button>
-				</div>
-				<div>
-					{blog.user.name}
-				</div>
-				<div>
-					<button onClick={onDeleteBlog} className='blogRemoveButton'>remove</button>
-				</div>
+		<div className="blog">
+			<h2>{blog.title} {blog.author}</h2>
+			<div>
+				<Link to={blog.url}>{blog.url}</Link>
 			</div>
+			<div>
+				{blog.likes} likes <button onClick={handleLike}>like</button>
+			</div>
+			<div>
+				added by {blog.user.name}
+			</div>
+			<h3>comments</h3>
+			<Commentform blogId={blog.id}/>
+			<ul>
+				{blog.comments.map(comment =>
+					<li key={comment.id}>
+						{comment.content}
+					</li>
+				)}
+			</ul>
 		</div>
 	)
-}
-
-Blog.propTypes = {
-	blog: PropTypes.object.isRequired,
-	onChangeLikes: PropTypes.func.isRequired,
-	onDeleteBlog: PropTypes.func.isRequired
 }
 
 export default Blog

@@ -1,165 +1,71 @@
-import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Login from './components/Login'
 import Newblog from './components/Newblog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import { initBlogs } from './reducers/blogReducer'
+import { setUser } from './reducers/loginReducer'
+import Blogs from './components/Blogs'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import Users from './components/Users'
+import User from './components/User'
+import { initUsers } from './reducers/userReducer'
+import Blog from './components/Blog'
+import Navbar from './components/Navbar'
 
 
 const App = () => {
-	const [blogs, setBlogs] = useState([])
-	const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
-	const [user, setUser] = useState(null)
-	const [message, setMessage] = useState(null)
+	const user = useSelector(state => state.user)
+	const dispatch = useDispatch()
 
 	useEffect(() => {
-		blogService.getAll().then(blogs =>
-			setBlogs(blogs.sort((a, b) => b.likes - a.likes))
-		)
-	}, [])
+		dispatch(initBlogs())
+	}, [dispatch])
 
 	useEffect(() => {
-		const loggedUserJSON = window.localStorage.getItem('loggedInUser')
-		if (loggedUserJSON) {
-			const user = JSON.parse(loggedUserJSON)
-			setUser(user)
-			blogService.setToken(user.token)
-		}
-	}, [])
+		dispatch(setUser())
+	}, [dispatch])
 
-	const newBlogRef = useRef()
+	useEffect(() => {
+		dispatch(initUsers())
+	}, [dispatch])
 
-	const notifyWith = (message, type) => {
-		setMessage({ message, type })
-		setTimeout(() => {
-			setMessage(null)
-		}, 2000)
-	}
-
-	const handleUsernameChange = (event) => {
-		setUsername(event.target.value)
-	}
-
-	const handlePasswordChange = (event) => {
-		setPassword(event.target.value)
-	}
-
-	const onNewBlogSubmit = async (newBlog) => {
-		newBlogRef.current.toggleVisiblity()
-		try {
-			const response = await blogService.create({
-				title: newBlog.title,
-				author: newBlog.author,
-				url: newBlog.url,
-				userId: user.id
-			})
-			setBlogs(blogs.concat(response))
-			notifyWith(`a new blog ${newBlog.title} by ${newBlog.author} added`, 'success')
-		} catch (exception) {
-			notifyWith('failed to create new blog', 'error')
-			setTimeout(() => {
-				setMessage(null)
-			}, 2000)
-		}
-	}
-
-	const onChangeLikes = async (blog) => {
-		try {
-			const changedBlog = await blogService.changeLikes(blog)
-			setBlogs(blogs.map(blog => blog.id !== changedBlog.id ? blog : changedBlog))
-		} catch (exception) {
-			notifyWith('failed to change likes', 'error')
-			console.log(exception)
-		}
-	}
-
-	const onDeleteBlog = async (blogToDelete) => {
-		if (blogToDelete.user.id === user.id) {
-			if (window.confirm(`Remove blog ${blogToDelete.title} by ${blogToDelete.author}`)) {
-				try {
-					await blogService.deleteBlog(blogToDelete.id)
-					setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id))
-					notifyWith('deleted blog', 'success')
-				} catch (exception) {
-					notifyWith('failed to delete blog', 'error')
-					console.log(exception)
-				}
-			}
-		} else {
-			notifyWith('You cannot delete other users blogs', 'error')
-		}
-	}
-
-	const onLoginSubmit = async (event) => {
-		event.preventDefault()
-		try {
-			const user = await loginService.authenticate({
-				userName: username,
-				passWord: password
-			})
-			window.localStorage.setItem('loggedInUser', JSON.stringify(user))
-			notifyWith(`Welcome ${user.name}!`, 'success')
-			setUser(user)
-			setUsername('')
-			setPassword('')
-			blogService.setToken(user.token)
-		} catch (exception) {
-			notifyWith('Wrong username or password', 'error')
-		}
-	}
-
-	const handleLogout = (event) => {
-		event.preventDefault()
-		window.localStorage.removeItem('loggedInUser')
-		setUser(null)
-	}
-	if (!user) {
+	if (user === null) {
 		return (
 			<div>
-				<Notification message={message}></Notification>
-				<Login onLoginSubmit={onLoginSubmit}
-					onUsernameChange={handleUsernameChange}
-					onPasswordChange={handlePasswordChange}
-					username={username}
-					password={password}>
-				</Login>
+				<Notification />
+				<Login />
 			</div>
 		)
 	}
 	return (
-		<div>
-			<h2>blogs</h2>
-			<Notification message={message}></Notification>
-			<div className='userInfo'>
-				{user.name} logged in
-				<button
-					id='logoutButton'
-					onClick={handleLogout}>
-					logout
-				</button>
+		<Router>
+			<div>
+				<Navbar />
+				<h2>blog app</h2>
+				<Notification />
+				<Switch>
+					<Route path="/blogs/:id">
+						<Blog />
+					</Route>
+					<Route path="/users/:id">
+						<User />
+					</Route>
+					<Route path="/users">
+						<Users />
+					</Route>
+					<Route path="/">
+						<Togglable
+							buttonLabel='create new blog'
+							buttonLabel2='cancel'>
+							<Newblog />
+						</Togglable>
+						<Blogs />
+					</Route>
+				</Switch>
 			</div>
-			<Togglable
-				buttonLabel='create new blog'
-				buttonLabel2='cancel'
-				ref={newBlogRef}>
-				<Newblog
-					createBlog={onNewBlogSubmit}
-				/>
-			</Togglable>
-			<div id='blogWrapper'>
-				{blogs.map(blog =>
-					<Blog
-						key={blog.id}
-						blog={blog}
-						onChangeLikes={() => onChangeLikes(blog)}
-						onDeleteBlog={() => onDeleteBlog(blog)}
-					/>
-				)}
-			</div>
-		</div>
+		</Router>
 	)
 }
 

@@ -35,4 +35,9 @@ const changeLikes = blog => {
 	return request.then(response => response.data)
 }
 
-export default { getAll, create, setToken, changeLikes, deleteBlog }
+const postComment = (comment, id) => {
+	const request = axios.post(`${baseUrl}/${id}/comments`, { content: comment })
+	return request.then(response => response.data)
+}
+
+export default { getAll, create, setToken, changeLikes, deleteBlog, postComment }

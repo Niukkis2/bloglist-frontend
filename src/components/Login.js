@@ -1,32 +1,28 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-const Login = ({
-	onLoginSubmit,
-	onUsernameChange,
-	onPasswordChange,
-	username,
-	password
-}) => {
+import { useField } from '../hooks'
+import { useDispatch } from 'react-redux'
+import { handleLogin } from '../reducers/loginReducer'
+const Login = () => {
+	const username = useField('text')
+	const password = useField('password')
+
+	const dispatch = useDispatch()
+
+	const handleSubmit = (event) => {
+		event.preventDefault()
+		dispatch(handleLogin(username.value, password.value))
+	}
 	return (
 		<div>
 			<h2>log in to application</h2>
-			<form onSubmit={onLoginSubmit} className="loginForm">
+			<form onSubmit={handleSubmit} className="loginForm">
 				<div>
-          username:
-					<input
-						id='username'
-						value={username}
-						onChange={onUsernameChange}
-					/>
+					username:
+					<input {...username}/>
 				</div>
 				<div>
-          password:
-					<input
-						id='password'
-						type="password"
-						value={password}
-						onChange={onPasswordChange}
-					/>
+					password:
+					<input {...password}/>
 				</div>
 				<div>
 					<button id='loginButton' type="submit">login</button>
@@ -34,14 +30,6 @@ const Login = ({
 			</form>
 		</div>
 	)
-}
-
-Login.propTypes = {
-	onLoginSubmit: PropTypes.func,
-	onUsernameChange: PropTypes.func,
-	onPasswordChange: PropTypes.func,
-	username: PropTypes.string,
-	password: PropTypes.string
 }
 
 export default Login
