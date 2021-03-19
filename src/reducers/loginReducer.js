@@ -28,7 +28,7 @@ export const handleLogin = (username, password) => {
 			dispatch(setUser())
 			blogService.setToken(user.token)
 		} catch (exception) {
-			dispatch(createNotification('Wrong username or password', 5, null, 'error'))
+			dispatch(createNotification('Wrong username or password', 5, null, 'danger'))
 		}
 	}
 }

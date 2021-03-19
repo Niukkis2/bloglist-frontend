@@ -1,17 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
+import { Alert } from 'react-bootstrap'
 
 const Notification = () => {
 	const notification = useSelector(state => state.notification)
+	if (!notification.toDisplay) {
+		return null
+	}
 	return (
-		<div className={notification.className}>
+		<Alert variant={notification.className}>
 			{notification.message}
-		</div>
+		</Alert>
 	)
-}
-Notification.propTypes = {
-	message: PropTypes.object
 }
 
 export default Notification

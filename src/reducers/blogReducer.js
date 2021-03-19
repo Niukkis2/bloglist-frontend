@@ -11,7 +11,7 @@ export const createBlog = (newBlog) => {
 			})
 			dispatch(createNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`, 5, null, 'success'))
 		} catch (e) {
-			dispatch(createNotification('failed to create new blog', 5, null, 'error'))
+			dispatch(createNotification('failed to create new blog', 5, null, 'danger'))
 		}
 	}
 }
@@ -37,7 +37,7 @@ export const removeBlog = (blogToRemove) => {
 					data: blogToRemove
 				})
 			} catch (e) {
-				dispatch(createNotification('failed to delete blog', 5, null, 'error'))
+				dispatch(createNotification('failed to delete blog', 5, null, 'danger'))
 			}
 		}
 	}
@@ -62,7 +62,7 @@ export const changeBlogsLikes = (blog) => {
 				data: changedBlog
 			})
 		} catch (exception) {
-			dispatch(createNotification('failed to change likes', 5, null, 'error'))
+			dispatch(createNotification('failed to change likes', 5, null, 'danger'))
 		}
 	}
 }

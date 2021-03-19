@@ -1,8 +1,6 @@
 const initialNotification = {
 	message: '',
-	style: {
-		display: 'none'
-	}
+	toDisplay: false
 }
 
 const showNotification = (message, timeOutID, className) => {
@@ -11,7 +9,8 @@ const showNotification = (message, timeOutID, className) => {
 		data: {
 			message: message,
 			className: className,
-			timeOutID: timeOutID
+			timeOutID: timeOutID,
+			toDisplay: true
 		}
 	}
 }
@@ -21,9 +20,7 @@ const hideNotification = () => {
 		type: 'HIDE_NOTIFICATION',
 		data: {
 			message: '',
-			style: {
-				display: 'none'
-			}
+			toDisplay: false
 		}
 	}
 }

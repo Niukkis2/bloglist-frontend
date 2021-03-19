@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useField } from '../hooks'
 import { useDispatch, useSelector } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
+import { Button, Form } from 'react-bootstrap'
 
 const Newblog = ({ toggleVisibility }) => {
 	const userId = useSelector(state => state.user.id)
@@ -27,27 +28,19 @@ const Newblog = ({ toggleVisibility }) => {
 	}
 
 	return (
-		<div>
+		<div id="container">
 			<h2>create new</h2>
-			<form onSubmit={addBlog} className='blogSubmitForm'>
-				<div>
-					title:
-					<input id='title' {...title}/>
-				</div>
-				<div>
-					author:
-					<input id='author' {...author}/>
-				</div>
-				<div>
-					url:
-					<input id='url' {...url}/>
-				</div>
-				<div>
-					<button type='submit' id='newBlogSubmitButton'>
-						create
-					</button>
-				</div>
-			</form>
+			<Form onSubmit={addBlog} className="blogSubmitForm">
+				<Form.Label>Title:</Form.Label>
+				<Form.Control {...title} />
+				<Form.Label>Author:</Form.Label>
+				<Form.Control {...author} />
+				<Form.Label>Url:</Form.Label>
+				<Form.Control {...url} />
+				<Button variant="primary" type='submit' id='newBlogSubmitButton'>
+					create
+				</Button>
+			</Form>
 		</div>
 	)
 }

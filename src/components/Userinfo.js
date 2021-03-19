@@ -14,6 +14,7 @@ const Userinfo = () => {
 		<span className='userInfo'>
 			{user.name} logged in
 			<button
+				variant="primary"
 				id='logoutButton'
 				onClick={handleLogout}>
 				logout

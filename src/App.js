@@ -12,7 +12,7 @@ import Users from './components/Users'
 import User from './components/User'
 import { initUsers } from './reducers/userReducer'
 import Blog from './components/Blog'
-import Navbar from './components/Navbar'
+import Topmenu from './components/Topmenu'
 
 
 const App = () => {
@@ -41,9 +41,8 @@ const App = () => {
 	}
 	return (
 		<Router>
-			<div>
-				<Navbar />
-				<h2>blog app</h2>
+			<div className="container">
+				<Topmenu />
 				<Notification />
 				<Switch>
 					<Route path="/blogs/:id">
